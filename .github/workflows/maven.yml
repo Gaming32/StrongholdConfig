@@ -9,7 +9,6 @@ jobs:
         java: [
           9,    # Minimum supported version
           16,   # Minecraft >= 1.17 (used now)
-          17    # Latest Java version
         ]
         # and run on both Linux and Windows
         os: [ubuntu-latest, windows-latest]
