@@ -22,8 +22,8 @@ public class StrongholdConfigPlugin extends JavaPlugin {
         strongholdConfigs = config.getConfigurationSection("configs");
 
         try {
-            StrongholdConfigWrapper.failIfUnloaded();
             StrongholdModifier.failIfUnloaded();
+            StrongholdPositionGenerator.failIfUnloaded();
         } catch (Exception e) {
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);

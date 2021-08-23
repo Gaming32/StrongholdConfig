@@ -22,6 +22,8 @@ jobs:
           distribution: zulu
       - name: Build with Maven
         run: |
+          curl -O https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+          java -jar BuildTools.jar
           cd strongholdconfig
           mvn clean install -f pom.xml
       - name: Upload shaded artifact

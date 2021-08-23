@@ -1,4 +1,4 @@
-package com.jemnetworks.strongholdconfig;
+package com.jemnetworks.strongholdconfig.util;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;

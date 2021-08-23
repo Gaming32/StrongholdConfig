@@ -29,7 +29,7 @@ public class StrongholdModifierListener implements Listener {
         }
         necessary = necessary && time != -1;
         if (necessary) {
-            plugin.logger.info("Successfully generated strongholds for world " + e.getWorld().getName() + " in " + time / 1000d + "seconds.");
+            plugin.logger.info("Successfully generated strongholds for world " + e.getWorld().getName() + " in " + time / 1000d + " seconds.");
         } else {
             plugin.logger.info("Stronghold generation for world " + e.getWorld().getName() + " skipped.");
         }
