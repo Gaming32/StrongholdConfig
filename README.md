@@ -12,7 +12,7 @@ You can download the latest dev build from [nightly.link](https://nightly.link/G
 
 Alternatively, you can build it manually:
 1. Download the [Spigot Build Tools](https://www.spigotmc.org/wiki/buildtools/): `curl -O https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar`
-2. Run the Build Tools: `java -jar BuildTools --dev`
+2. Run the Build Tools: `java -jar BuildTools.jar --dev`
 3. Clone the repo: `git clone https://github.com/Gaming32/StrongholdConfig`
 4. cd into the project: `cd StrongholdConfig/strongholdconfig`
 5. Build the project: `mvn clean install`
@@ -20,7 +20,7 @@ Alternatively, you can build it manually:
 Here's the whole process:
 ```shell
 curl -O https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-java -jar BuildTools --dev
+java -jar BuildTools.jar --dev
 git clone https://github.com/Gaming32/StrongholdConfig
 cd StrongholdConfig/strongholdconfig
 mvn clean install
