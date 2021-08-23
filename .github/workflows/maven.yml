@@ -7,7 +7,7 @@ jobs:
       matrix:
         # Use these Java versions
         java: [
-          # Java 9 can't compile Spigot, so it can't be used for workflows
+          9,    # Minimum supported version
           16,   # Minecraft >= 1.17 (used now)
         ]
         # and run on both Linux and Windows
@@ -20,15 +20,17 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: zulu
-      - name: Build with Maven
+      - name: Build Spigot
         run: |
           curl -O https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-          java -jar BuildTools.jar
+          java -jar BuildTools.jar --dev
+      - name: Build with Maven
+        run: |
           cd strongholdconfig
           mvn clean install -f pom.xml
       - name: Upload shaded artifact
         uses: actions/upload-artifact@v2
-        if: ${{ matrix.java == 16 && matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.java == 9 && matrix.os == 'ubuntu-latest' }}
         with:
           name: shaded-plugin-artifact
           path: strongholdconfig/target/StrongholdConfig-*.jar
