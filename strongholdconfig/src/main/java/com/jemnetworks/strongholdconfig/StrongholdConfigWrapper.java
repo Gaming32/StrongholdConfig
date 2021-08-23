@@ -17,11 +17,11 @@ public final class StrongholdConfigWrapper {
 
     static {
         try {
-            CONFIG_CLASS = Class.forName("net.minecraft.world.gen.chunk.StrongholdConfig");
+            CONFIG_CLASS = Class.forName("net.minecraft.world.level.levelgen.feature.configurations.StructureSettingsStronghold");
 
-            DISTANCE_FIELD = CONFIG_CLASS.getDeclaredField("distance");
-            SPREAD_FIELD = CONFIG_CLASS.getDeclaredField("spread");
-            COUNT_FIELD = CONFIG_CLASS.getDeclaredField("count");
+            DISTANCE_FIELD = CONFIG_CLASS.getDeclaredField("b");
+            SPREAD_FIELD = CONFIG_CLASS.getDeclaredField("c");
+            COUNT_FIELD = CONFIG_CLASS.getDeclaredField("d");
 
             DISTANCE_FIELD.setAccessible(true);
             SPREAD_FIELD.setAccessible(true);
@@ -39,7 +39,7 @@ public final class StrongholdConfigWrapper {
         this(CONFIG_CONSTRUCTOR.newInstance(distance, spread, count));
     }
 
-    private StrongholdConfigWrapper(Object wrapped) {
+    public StrongholdConfigWrapper(Object wrapped) {
         internal = wrapped;
     }
 
@@ -55,17 +55,29 @@ public final class StrongholdConfigWrapper {
         return COUNT_FIELD.getInt(internal);
     }
 
-    public Object getInternalConfig() {
+    public Object getNMS() {
         return internal;
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof StrongholdConfigWrapper)) return false;
+        StrongholdConfigWrapper other = (StrongholdConfigWrapper)o;
+        try {
+            return getDistance() == other.getDistance() &&
+                   getSpread() == other.getSpread() &&
+                   getCount() == other.getCount();
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            return getNMS() == other.getNMS();
+        }
     }
 
     public static boolean ensureLoadedCorrectly() {
         return loadException == null;
     }
 
-    public static void failIfUnloaded() throws Exception {
+    public static void failIfUnloaded() {
         if (!ensureLoadedCorrectly()) {
-            throw loadException;
+            throw new RuntimeException("Unable to load StrongholdConfigWrapper", loadException);
         }
     }
 }

@@ -1,0 +1,5 @@
+configs:
+  default:
+    distance: 32
+    spread: 3
+    count: 128
