@@ -6,7 +6,7 @@ Stronghold generation configuration plugin for Bukkit
 
 ## Downloading the latest development build
 
-You can download the latest dev build from [nightly.link](https://nightly.link/Gaming32/StrongholdConfig/workflows/maven/main). If this doesn't work, you can also download it from the [GitHub Actions page](https://github.com/Gaming32/StrongholdConfig/actions) (requires a GitHub account). 
+You can download the latest dev build from [nightly.link](https://nightly.link/Gaming32/StrongholdConfig/workflows/maven/main). If this doesn't work, you can also download it from the [GitHub Actions page](https://github.com/Gaming32/StrongholdConfig/actions). 
 
 ## Building manually
 
