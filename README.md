@@ -4,6 +4,13 @@
 
 Stronghold generation configuration plugin for Bukkit
 
+## Installing the plugin
+
+**Please note: This plugin requires Minecraft 1.17 or later, as well as Java 16 or later, to run.**
+
+1. Download the plugin from the [GitHub Releases page](https://github.com/Gaming32/StrongholdConfig/releases) and drop it in your server's `plugins` folder.
+2. When you run your server, you *need* to pass the `--add-opens=java.base/java.lang.reflect=ALL-UNNAMED` JVM argument to `java`. JVM arguments are the arguments between `java` and `-jar`. If you use a server hosting service, please check with your hosting service on how to add or modifiy JVM arguments (if the hosting service even allows it at all).
+
 ## Downloading the latest development build
 
 You can download the latest dev build from [nightly.link](https://nightly.link/Gaming32/StrongholdConfig/workflows/maven/main). If this doesn't work, you can also download it from the [GitHub Actions page](https://github.com/Gaming32/StrongholdConfig/actions). 
