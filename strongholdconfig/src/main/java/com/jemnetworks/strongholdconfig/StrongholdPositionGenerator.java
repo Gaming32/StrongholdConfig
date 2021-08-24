@@ -77,6 +77,7 @@ public class StrongholdPositionGenerator {
                 chunkX = SectionPosition.a(strongholdPos.getX());
                 chunkY = SectionPosition.a(strongholdPos.getZ());
             }
+
             // Track the stronghold
             strongholds.add(new ChunkCoordIntPair(chunkX, chunkY));
 
@@ -96,28 +97,23 @@ public class StrongholdPositionGenerator {
 
     // This code is still obfuscated, sorry!
     private static BlockPosition locateBiome(WorldChunkManager parent, int x, int z, List<BiomeBase> allowedBiomes, Random random) {
-        int n = QuartPos.a(x);
-        int o = QuartPos.a(z);
-        int p = QuartPos.a(112);
-        int q = QuartPos.a(0);
-        BlockPosition lv = null;
-        int r = 0;
-        int s = p;
-        for (int t = s; t <= p; t++) {
-            for (int u = -t; u <= t; u++) {
-                for (int v = -t; v <= t; v++) {
-                    int w = n + v;
-                    int i = o + u;
-                    if (allowedBiomes.contains(parent.getBiome(w, q, i))) {
-                        if (lv == null || random.nextInt(r + 1) == 0) {
-                            lv = new BlockPosition(QuartPos.b(w), 0, QuartPos.b(i));
-                        }
-                        r++;
+        int biomeX = QuartPos.a(x);
+        int biomeZ = QuartPos.a(z);
+        BlockPosition result = null;
+        int foundCount = 0;
+        for (int offsetZ = -28; offsetZ <= 28; offsetZ++) {
+            for (int offsetX = -28; offsetX <= 28; offsetX++) {
+                int testX = biomeX + offsetX;
+                int testZ = biomeZ + offsetZ;
+                if (allowedBiomes.contains(parent.getBiome(testX, 0, testZ))) {
+                    if (result == null || random.nextInt(foundCount + 1) == 0) {
+                        result = new BlockPosition(QuartPos.b(testX), 0, QuartPos.b(testZ));
                     }
+                    foundCount++;
                 }
             }
         }
-        return lv;
+        return result;
     }
 
     public static boolean ensureLoadedCorrectly() {
