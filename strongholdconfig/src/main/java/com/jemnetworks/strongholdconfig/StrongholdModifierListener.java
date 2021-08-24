@@ -18,7 +18,7 @@ public class StrongholdModifierListener implements Listener {
         StrongholdConfigWrapper newConfig = null;
         try {
             newConfig = plugin.getWorldConfig(e.getWorld().getName());
-            time = StrongholdModifier.inject(e.getWorld(), newConfig, newConfig == plugin.defaultConfig); // If the section is defined in the config, but is empty, the configs will be .equals() but not ==
+            time = StrongholdModifier.inject(e.getWorld(), newConfig, newConfig != plugin.defaultConfig); // If the section is defined in the config, but is empty, the configs will be .equals() but not ==
         } catch (ReflectiveOperationException e1) {
             e1.printStackTrace();
             time = -1;
