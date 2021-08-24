@@ -1,8 +1,11 @@
 # StrongholdConfig
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Gaming32/StrongholdConfig/maven) ![GitHub](https://img.shields.io/github/license/Gaming32/StrongholdConfig)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Gaming32/StrongholdConfig/maven)
+![GitHub](https://img.shields.io/github/license/Gaming32/StrongholdConfig)
+<!-- ![GitHub all releases](https://img.shields.io/github/downloads/Gaming32/StrongholdConfig/total) -->
 
-Stronghold generation configuration plugin for Bukkit
+Stronghold generation configuration plugin for Bukkit. 
+For more info on exactly *how* to configure it, see [config.yml](strongholdconfig/src/main/resources/config.yml). 
 
 ## Installing the plugin
 
