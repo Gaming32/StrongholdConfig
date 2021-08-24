@@ -72,7 +72,7 @@ public class StrongholdPositionGenerator {
             int chunkZ = (int)Math.round(Math.sin(offsetAngle) * distanceFromWorldOrigin);
 
             // Move the stronghold if it's not in a whitelisted biome
-            BlockPosition strongholdPos = locateBiome(POPULATION_SOURCE_FIELD.get(gen), SectionPosition.a(chunkZ, 8), SectionPosition.a(chunkY, 8), allowedBiomes, random);
+            BlockPosition strongholdPos = locateBiome(POPULATION_SOURCE_FIELD.get(gen), SectionPosition.a(chunkX, 8), SectionPosition.a(chunkZ, 8), allowedBiomes, random);
             if (strongholdPos != null) {
                 chunkX = SectionPosition.a(strongholdPos.getX());
                 chunkZ = SectionPosition.a(strongholdPos.getZ());
