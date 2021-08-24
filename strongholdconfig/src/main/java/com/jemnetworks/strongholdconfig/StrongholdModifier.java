@@ -44,7 +44,12 @@ public class StrongholdModifier {
 
     public static long inject(World world, StrongholdConfigWrapper config) throws ReflectiveOperationException {
         ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
-        return inject(chunkGenerator, config.getInternal());
+        return inject(chunkGenerator, config.getInternal(), false);
+    }
+
+    public static long inject(World world, StrongholdConfigWrapper config, boolean force) throws ReflectiveOperationException {
+        ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
+        return inject(chunkGenerator, config.getInternal(), force);
     }
 
     public static long regenerate(World world) throws ReflectiveOperationException {
@@ -52,9 +57,9 @@ public class StrongholdModifier {
         return regenerate(chunkGenerator);
     }
 
-    private static long inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config) throws ReflectiveOperationException {
+    private static long inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config, boolean force) throws ReflectiveOperationException {
         StructureSettings structuresConfig = chunkGenerator.getSettings();
-        if (structuresConfig.b() == null) return -1; // No stronghold in this world
+        if (!force && structuresConfig.b() == null) return -1; // No stronghold in this world
         STRONGHOLD_FIELD.set(structuresConfig, config);
         return regenerate(chunkGenerator);
     }

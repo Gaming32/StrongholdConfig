@@ -53,7 +53,7 @@ public class StrongholdPositionGenerator {
 
         // Load config
         int distance = strongholdConfig.getDistance(); // Distance between each ring
-        int count = strongholdConfig.getCount(); // The maximum number of strongholds in the world (128 by default)
+        int count = strongholdConfig.getCount(); // The maximum number of strongholds in the world
         int spread = strongholdConfig.getSpread(); // How many strongholds in the first stronghold ring
 
         // Initialize RNG
