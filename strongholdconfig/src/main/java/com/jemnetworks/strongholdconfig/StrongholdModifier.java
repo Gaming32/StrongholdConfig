@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureSettingsStronghold;
 
 public class StrongholdModifier {
-    private static Exception loadException = null;
+    private static Throwable loadException = null;
 
     private static Field STRONGHOLD_FIELD;
 
@@ -28,7 +28,7 @@ public class StrongholdModifier {
 
             STRONGHOLDS_FIELD = ChunkGenerator.class.getDeclaredField("f");
             STRONGHOLDS_FIELD.setAccessible(true);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             loadException = e;
         }
     }

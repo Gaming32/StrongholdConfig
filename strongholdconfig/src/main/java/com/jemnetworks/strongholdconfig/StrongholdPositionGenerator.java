@@ -16,7 +16,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.StructureGenerator;
 
 public class StrongholdPositionGenerator {
-    private static Exception loadException = null;
+    private static Throwable loadException = null;
 
     private static TypedField<List<ChunkCoordIntPair>> STRONGHOLDS_FIELD;
     private static TypedField<WorldChunkManager> POPULATION_SOURCE_FIELD;
@@ -27,7 +27,7 @@ public class StrongholdPositionGenerator {
             STRONGHOLDS_FIELD.getWrapped().setAccessible(true);
             POPULATION_SOURCE_FIELD = TypedField.getDeclaredField(ChunkGenerator.class, "b");
             POPULATION_SOURCE_FIELD.getWrapped().setAccessible(true);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             loadException = e;
         }
     }

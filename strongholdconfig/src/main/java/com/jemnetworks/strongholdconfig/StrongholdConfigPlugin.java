@@ -26,6 +26,16 @@ public class StrongholdConfigPlugin extends JavaPlugin {
             StrongholdPositionGenerator.failIfUnloaded();
         } catch (Exception e) {
             e.printStackTrace();
+            if (e.getCause() instanceof ExceptionInInitializerError) {
+                Throwable e2 = e.getCause();
+                if (e2.getCause() instanceof RuntimeException) {
+                    e2 = e2.getCause();
+                    if (e2.getCause() instanceof IllegalAccessException) {
+                        logger.severe("Please make sure that you added the \"--add-opens=java.base/java.lang.reflect=ALL-UNNAMED\" JVM argument.");
+                    }
+                }
+            }
+            logger.severe("Initialization failed, disabling plugin...");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
