@@ -34,26 +34,14 @@ public class StrongholdConfigPlugin extends JavaPlugin {
 
         ConfigurationSection defaultConfigSection = strongholdConfigs.getConfigurationSection("default");
         if (defaultConfigSection != null) {
-            StrongholdConfigWrapper newDefault = null;
             try {
-                newDefault = new StrongholdConfigWrapper(
+                defaultConfig = new StrongholdConfigWrapper(
                     defaultConfigSection.getInt("distance", 32),
                     defaultConfigSection.getInt("spread", 3),
                     defaultConfigSection.getInt("count", 128)
                 );
             } catch (Exception e) {
-                logger.warning("Unable to inject default config");
                 e.printStackTrace();
-            }
-            if (newDefault != null && newDefault.equals(StrongholdModifier.getDefaultConfig())) {
-                logger.info("Default config is the same as Vanilla, skipping injection");
-                newDefault = null;
-            }
-            if (newDefault != null) {
-                logger.info("Injecting default config");
-                StrongholdModifier.injectDefault(newDefault);
-                logger.info("Default config injected");
-                defaultConfig = newDefault;
             }
         }
 
@@ -64,7 +52,7 @@ public class StrongholdConfigPlugin extends JavaPlugin {
     public StrongholdConfigWrapper getWorldConfig(String name) throws ReflectiveOperationException {
         ConfigurationSection configSection = strongholdConfigs.getConfigurationSection(name);
         if (configSection == null) {
-            configSection = strongholdConfigs.getConfigurationSection("default");
+            return defaultConfig;
         }
         return new StrongholdConfigWrapper(
             configSection.getInt("distance", defaultConfig.getDistance()),

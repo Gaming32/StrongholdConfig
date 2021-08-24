@@ -8,32 +8,20 @@ import com.jemnetworks.strongholdconfig.util.FieldHelper;
 import org.bukkit.World;
 
 import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.level.ChunkCoordIntPair;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureSettingsStronghold;
-import sun.misc.Unsafe;
 
-@SuppressWarnings("restriction")
 public class StrongholdModifier {
     private static Exception loadException = null;
 
-    private static Object DEFAULT_STRONGHOLD_FIELD_BASE;
-    private static long DEFAULT_STRONGHOLD_FIELD_OFFSET;
     private static Field STRONGHOLD_FIELD;
 
     private static Field STRONGHOLDS_FIELD;
 
-    private static Unsafe UNSAFE;
-
     static {
         try {
-            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            UNSAFE = (Unsafe)unsafeField.get(null);
-
-            Field defaultStronholdField = StructureSettings.class.getDeclaredField("c");
-            DEFAULT_STRONGHOLD_FIELD_BASE = UNSAFE.staticFieldBase(defaultStronholdField);
-            DEFAULT_STRONGHOLD_FIELD_OFFSET = UNSAFE.staticFieldOffset(defaultStronholdField);
             STRONGHOLD_FIELD = StructureSettings.class.getDeclaredField("e");
             STRONGHOLD_FIELD.setAccessible(true);
             FieldHelper.makeNonFinal(STRONGHOLD_FIELD);
@@ -46,11 +34,7 @@ public class StrongholdModifier {
     }
 
     public static StrongholdConfigWrapper getDefaultConfig() {
-        return new StrongholdConfigWrapper(UNSAFE.getObject(DEFAULT_STRONGHOLD_FIELD_BASE, DEFAULT_STRONGHOLD_FIELD_OFFSET));
-    }
-
-    public static void injectDefault(StrongholdConfigWrapper config) {
-        UNSAFE.putObject(DEFAULT_STRONGHOLD_FIELD_BASE, DEFAULT_STRONGHOLD_FIELD_OFFSET, config.getInternal());
+        return new StrongholdConfigWrapper(StructureSettings.c);
     }
 
     private static ChunkGenerator getGeneratorFromWorld(World world) throws ReflectiveOperationException {
@@ -75,8 +59,9 @@ public class StrongholdModifier {
         return regenerate(chunkGenerator);
     }
 
+    @SuppressWarnings("unchecked")
     private static long regenerate(ChunkGenerator chunkGenerator) throws ReflectiveOperationException {
-        ((List<?>)STRONGHOLDS_FIELD.get(chunkGenerator)).clear();
+        ((List<ChunkCoordIntPair>)STRONGHOLDS_FIELD.get(chunkGenerator)).clear();
         long start = System.currentTimeMillis();
         StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator);
         long end = System.currentTimeMillis();
