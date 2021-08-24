@@ -6,7 +6,7 @@
 
   <groupId>com.jemnetworks.strongholdconfig</groupId>
   <artifactId>StrongholdConfig</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>StrongholdConfig</name>
   <url>https://github.com/Gaming32/StrongholdConfig</url>

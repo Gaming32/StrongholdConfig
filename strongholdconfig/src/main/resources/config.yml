@@ -1,5 +1,9 @@
+# The configurations for each world, by name
+# Understanding this config requires some basic knowledge of stronghold generation
+# See https://minecraft.fandom.com/wiki/Stronghold#Java_Edition
 configs:
+  # This is the default config and will apply to all worlds that generate strongholds
   default:
-    distance: 32
-    spread: 3
-    count: 128
+    distance: 32 # 1/3 the width of a ring, in chunks
+    spread: 3    # The number of strongholds in the first ring (later rings are derived from this)
+    count: 128   # The total number of strongholds to generate in the world
