@@ -3,6 +3,7 @@ package com.jemnetworks.strongholdconfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import com.jemnetworks.strongholdconfig.util.TypedField;
 
@@ -33,6 +34,10 @@ public class StrongholdPositionGenerator {
     }
 
     public static void generateStrongholdPositions(ChunkGenerator gen) throws ReflectiveOperationException {
+        generateStrongholdPositions(gen, 0, null, null);
+    }
+
+    public static void generateStrongholdPositions(ChunkGenerator gen, long startTime, String name, Logger logger) throws ReflectiveOperationException {
         List<ChunkCoordIntPair> strongholds = STRONGHOLDS_FIELD.get(gen);
 
         // Strongholds already generated!
@@ -91,6 +96,11 @@ public class StrongholdPositionGenerator {
                 spread += 2 * spread / (activeRing + 1);
                 spread = Math.min(spread, count - strongholdNumber);
                 offsetAngle += random.nextDouble() * Math.PI * 2.0D;
+            }
+
+            if (logger != null && System.currentTimeMillis() - startTime > 7_499) {
+                logger.info("Generating strongholds for level \"" + name + "\": " + (int)(strongholdNumber / (double)count * 100) + "%");
+                startTime = System.currentTimeMillis();
             }
         }
     }

@@ -1,5 +1,5 @@
 main: com.jemnetworks.strongholdconfig.StrongholdConfigPlugin
 name: StrongholdConfig
-version: 1.0
+version: ${project.version}
 api-version: 1.17
 load: STARTUP

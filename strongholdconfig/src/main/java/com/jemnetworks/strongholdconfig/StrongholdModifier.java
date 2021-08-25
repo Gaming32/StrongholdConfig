@@ -2,6 +2,7 @@ package com.jemnetworks.strongholdconfig;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.jemnetworks.strongholdconfig.util.FieldHelper;
 
@@ -43,33 +44,52 @@ public class StrongholdModifier {
     }
 
     public static long inject(World world, StrongholdConfigWrapper config) throws ReflectiveOperationException {
-        ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
-        return inject(chunkGenerator, config.getInternal(), false);
+        return inject(world, config, false, null);
     }
 
     public static long inject(World world, StrongholdConfigWrapper config, boolean force) throws ReflectiveOperationException {
+        return inject(world, config, force, null);
+    }
+
+    public static long inject(World world, StrongholdConfigWrapper config, Logger logger) throws ReflectiveOperationException {
+        return inject(world, config, false, logger);
+    }
+
+    public static long inject(World world, StrongholdConfigWrapper config, boolean force, Logger logger) throws ReflectiveOperationException {
         ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
-        return inject(chunkGenerator, config.getInternal(), force);
+        return inject(chunkGenerator, config.getInternal(), world.getName(), force, logger);
     }
 
     public static long regenerate(World world) throws ReflectiveOperationException {
-        ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
-        return regenerate(chunkGenerator);
+        return regenerate(world, null);
     }
 
-    private static long inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config, boolean force) throws ReflectiveOperationException {
+    public static long regenerate(World world, Logger logger) throws ReflectiveOperationException {
+        ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
+        return regenerate(chunkGenerator, world.getName(), logger);
+    }
+
+    private static long inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config, String worldName, boolean force, Logger logger) throws ReflectiveOperationException {
         StructureSettings structuresConfig = chunkGenerator.getSettings();
         if (!force && structuresConfig.b() == null) return -1; // No stronghold in this world
+        if (logger != null) logger.info("Generating " + config.c() + " strongholds for level \"" + worldName + "\"");
         STRONGHOLD_FIELD.set(structuresConfig, config);
-        return regenerate(chunkGenerator);
+        return regenerate(chunkGenerator, worldName, logger);
     }
 
     @SuppressWarnings("unchecked")
-    private static long regenerate(ChunkGenerator chunkGenerator) throws ReflectiveOperationException {
+    private static long regenerate(ChunkGenerator chunkGenerator, String worldName, Logger logger) throws ReflectiveOperationException {
         ((List<ChunkCoordIntPair>)STRONGHOLDS_FIELD.get(chunkGenerator)).clear();
-        long start = System.currentTimeMillis();
-        StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator);
-        long end = System.currentTimeMillis();
+        long start, end;
+        if (logger == null) {
+            start = System.currentTimeMillis();
+            StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator);
+            end = System.currentTimeMillis();
+        } else {
+            start = System.currentTimeMillis();
+            StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator, start, worldName, logger);
+            end = System.currentTimeMillis();
+        }
         return end - start;
     }
 
