@@ -74,17 +74,17 @@ public class StrongholdPositionGenerator {
             double distanceFromWorldOrigin = (4 * distance + distance * activeRing * 6) // Minimum distance
                                            + (random.nextDouble() - 0.5D) * distance * 2.5D; // Distance in ring
             int chunkX = (int)Math.round(Math.cos(offsetAngle) * distanceFromWorldOrigin);
-            int chunkY = (int)Math.round(Math.sin(offsetAngle) * distanceFromWorldOrigin);
+            int chunkZ = (int)Math.round(Math.sin(offsetAngle) * distanceFromWorldOrigin);
 
             // Move the stronghold if it's not in a whitelisted biome
-            BlockPosition strongholdPos = locateBiome(POPULATION_SOURCE_FIELD.get(gen), SectionPosition.a(chunkX, 8), SectionPosition.a(chunkY, 8), allowedBiomes, random);
+            BlockPosition strongholdPos = locateBiome(POPULATION_SOURCE_FIELD.get(gen), SectionPosition.a(chunkX, 8), SectionPosition.a(chunkZ, 8), allowedBiomes, random);
             if (strongholdPos != null) {
                 chunkX = SectionPosition.a(strongholdPos.getX());
-                chunkY = SectionPosition.a(strongholdPos.getZ());
+                chunkZ = SectionPosition.a(strongholdPos.getZ());
             }
 
             // Track the stronghold
-            strongholds.add(new ChunkCoordIntPair(chunkX, chunkY));
+            strongholds.add(new ChunkCoordIntPair(chunkX, chunkZ));
 
             // Calculate the next stronghold position
             offsetAngle += 6.283185307179586D / spread;
@@ -105,7 +105,6 @@ public class StrongholdPositionGenerator {
         }
     }
 
-    // This code is still obfuscated, sorry!
     private static BlockPosition locateBiome(WorldChunkManager parent, int x, int z, List<BiomeBase> allowedBiomes, Random random) {
         int biomeX = QuartPos.a(x);
         int biomeZ = QuartPos.a(z);
