@@ -18,6 +18,10 @@ public final class TypedField<T> {
         return (T)field.get(obj);
     }
 
+    public void set(Object obj, T value) throws IllegalArgumentException, IllegalAccessException {
+        field.set(obj, value);
+    }
+
     public Field getWrapped() {
         return field;
     }

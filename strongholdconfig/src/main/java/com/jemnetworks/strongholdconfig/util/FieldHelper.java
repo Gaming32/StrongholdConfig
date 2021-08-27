@@ -24,4 +24,7 @@ public final class FieldHelper {
         }
     }
 
+    public static void makeNonFinal(TypedField<?> field) {
+        makeNonFinal(field.getWrapped());
+    }
 }

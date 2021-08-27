@@ -37,9 +37,15 @@ public class StrongholdPositionGenerator {
         generateStrongholdPositions(gen, 0, null, null);
     }
 
-    public static void generateStrongholdPositions(ChunkGenerator gen, long startTime, String name, Logger logger) throws ReflectiveOperationException {
-        List<ChunkCoordIntPair> strongholds = STRONGHOLDS_FIELD.get(gen);
+    public static void generateStrongholdPositions(ChunkGenerator gen, List<ChunkCoordIntPair> strongholds) throws ReflectiveOperationException {
+        generateStrongholdPositions(gen, strongholds, 0, null, null);
+    }
 
+    public static void generateStrongholdPositions(ChunkGenerator gen, long startTime, String name, Logger logger) throws ReflectiveOperationException {
+        generateStrongholdPositions(gen, STRONGHOLDS_FIELD.get(gen), startTime, name, logger);
+    }
+
+    public static void generateStrongholdPositions(ChunkGenerator gen, List<ChunkCoordIntPair> strongholds, long startTime, String name, Logger logger) throws ReflectiveOperationException {
         // Strongholds already generated!
         if (!strongholds.isEmpty())
             return;

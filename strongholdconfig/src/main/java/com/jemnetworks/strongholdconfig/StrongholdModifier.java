@@ -1,10 +1,12 @@
 package com.jemnetworks.strongholdconfig;
 
-import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.jemnetworks.strongholdconfig.util.CallableThreadGroup;
 import com.jemnetworks.strongholdconfig.util.FieldHelper;
+import com.jemnetworks.strongholdconfig.util.TypedField;
 
 import org.bukkit.World;
 
@@ -15,20 +17,23 @@ import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureSettingsStronghold;
 
 public class StrongholdModifier {
+    public static CallableThreadGroup threadGroup = null;
+
     private static Throwable loadException = null;
 
-    private static Field STRONGHOLD_FIELD;
+    // private static Field STRONGHOLD_FIELD;
+    private static TypedField<StructureSettingsStronghold> STRONGHOLD_FIELD;
 
-    private static Field STRONGHOLDS_FIELD;
+    private static TypedField<List<ChunkCoordIntPair>> STRONGHOLDS_FIELD;
 
     static {
         try {
-            STRONGHOLD_FIELD = StructureSettings.class.getDeclaredField("e");
-            STRONGHOLD_FIELD.setAccessible(true);
+            STRONGHOLD_FIELD = TypedField.getDeclaredField(StructureSettings.class, "e");
+            STRONGHOLD_FIELD.getWrapped().setAccessible(true);
             FieldHelper.makeNonFinal(STRONGHOLD_FIELD);
 
-            STRONGHOLDS_FIELD = ChunkGenerator.class.getDeclaredField("f");
-            STRONGHOLDS_FIELD.setAccessible(true);
+            STRONGHOLDS_FIELD = TypedField.getDeclaredField(ChunkGenerator.class, "f");
+            STRONGHOLDS_FIELD.getWrapped().setAccessible(true);
         } catch (Throwable e) {
             loadException = e;
         }
@@ -43,53 +48,65 @@ public class StrongholdModifier {
         return worldServer.getChunkProvider().getChunkGenerator();
     }
 
-    public static long inject(World world, StrongholdConfigWrapper config) throws ReflectiveOperationException {
+    public static Thread inject(World world, StrongholdConfigWrapper config) throws ReflectiveOperationException {
         return inject(world, config, false, null);
     }
 
-    public static long inject(World world, StrongholdConfigWrapper config, boolean force) throws ReflectiveOperationException {
+    public static Thread inject(World world, StrongholdConfigWrapper config, boolean force) throws ReflectiveOperationException {
         return inject(world, config, force, null);
     }
 
-    public static long inject(World world, StrongholdConfigWrapper config, Logger logger) throws ReflectiveOperationException {
+    public static Thread inject(World world, StrongholdConfigWrapper config, Logger logger) throws ReflectiveOperationException {
         return inject(world, config, false, logger);
     }
 
-    public static long inject(World world, StrongholdConfigWrapper config, boolean force, Logger logger) throws ReflectiveOperationException {
+    public static Thread inject(World world, StrongholdConfigWrapper config, boolean force, Logger logger) throws ReflectiveOperationException {
         ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
         return inject(chunkGenerator, config.getInternal(), world.getName(), force, logger);
     }
 
-    public static long regenerate(World world) throws ReflectiveOperationException {
+    public static Thread regenerate(World world) throws ReflectiveOperationException {
         return regenerate(world, null);
     }
 
-    public static long regenerate(World world, Logger logger) throws ReflectiveOperationException {
+    public static Thread regenerate(World world, Logger logger) throws ReflectiveOperationException {
         ChunkGenerator chunkGenerator = getGeneratorFromWorld(world);
         return regenerate(chunkGenerator, world.getName(), logger);
     }
 
-    private static long inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config, String worldName, boolean force, Logger logger) throws ReflectiveOperationException {
+    private static Thread inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config, String worldName, boolean force, Logger logger) throws ReflectiveOperationException {
         StructureSettings structuresConfig = chunkGenerator.getSettings();
-        if (!force && structuresConfig.b() == null) return -1; // No stronghold in this world
+        if (!force && structuresConfig.b() == null) return null; // No stronghold in this world
         STRONGHOLD_FIELD.set(structuresConfig, config);
         return regenerate(chunkGenerator, worldName, logger);
     }
 
-    @SuppressWarnings("unchecked")
-    private static long regenerate(ChunkGenerator chunkGenerator, String worldName, Logger logger) throws ReflectiveOperationException {
-        ((List<ChunkCoordIntPair>)STRONGHOLDS_FIELD.get(chunkGenerator)).clear();
-        long start, end;
-        if (logger == null) {
-            start = System.currentTimeMillis();
-            StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator);
-            end = System.currentTimeMillis();
+    private static Thread regenerate(ChunkGenerator chunkGenerator, String worldName, Logger logger) throws ReflectiveOperationException {
+        List<ChunkCoordIntPair> strongholds = STRONGHOLDS_FIELD.get(chunkGenerator);
+        strongholds.clear();
+        if (threadGroup == null) {
+            regenerateInternal(chunkGenerator, strongholds, worldName, logger);
+            return null;
         } else {
-            start = System.currentTimeMillis();
-            StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator, start, worldName, logger);
-            end = System.currentTimeMillis();
+            List<ChunkCoordIntPair> synchronizedStrongholds = Collections.synchronizedList(strongholds);
+            Thread thread = threadGroup.newThreadInGroup(() -> {
+                try {
+                    regenerateInternal(chunkGenerator, synchronizedStrongholds, worldName, logger);
+                } catch (ReflectiveOperationException e) {
+                    e.printStackTrace();
+                }
+            });
+            thread.start();
+            return thread;
         }
-        return end - start;
+    }
+
+    private static void regenerateInternal(ChunkGenerator chunkGenerator, List<ChunkCoordIntPair> into, String worldName, Logger logger) throws ReflectiveOperationException {
+        if (logger == null) {
+            StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator);
+        } else {
+            StrongholdPositionGenerator.generateStrongholdPositions(chunkGenerator, System.currentTimeMillis(), worldName, logger);
+        }
     }
 
     public static boolean ensureLoadedCorrectly() {

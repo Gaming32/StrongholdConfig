@@ -2,6 +2,8 @@ package com.jemnetworks.strongholdconfig;
 
 import java.util.logging.Logger;
 
+import com.jemnetworks.strongholdconfig.util.CallableThreadGroup;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,6 +41,9 @@ public class StrongholdConfigPlugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        StrongholdModifier.threadGroup = new CallableThreadGroup(new ThreadGroup("Stronghold Generation Thread"));
+        StrongholdModifier.threadGroup.setNameFormat("Stronghold Generation Thread - #%1$d");
 
         originalDefaultConfig = defaultConfig = StrongholdModifier.getDefaultConfig();
 
