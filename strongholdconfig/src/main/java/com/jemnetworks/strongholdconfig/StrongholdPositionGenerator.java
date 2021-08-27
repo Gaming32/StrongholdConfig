@@ -46,6 +46,8 @@ public class StrongholdPositionGenerator {
 
         // Cancel if no strongholds in this world
         StrongholdConfigWrapper strongholdConfig = new StrongholdConfigWrapper(gen.getSettings().b());
+        if (logger != null) logger.info("Generating " + strongholdConfig.getCount() + " strongholds for level \"" + name + "\"");
+
         if (strongholdConfig == null || strongholdConfig.getCount() == 0)
             return;
 
@@ -64,6 +66,8 @@ public class StrongholdPositionGenerator {
         // Initialize RNG
         Random random = new Random();
         random.setSeed(gen.e);
+
+        long checkpointTime = System.currentTimeMillis();
 
         // Generate the strongholds
         double offsetAngle = random.nextDouble() * Math.PI * 2.0D; // Starting angle
@@ -98,11 +102,14 @@ public class StrongholdPositionGenerator {
                 offsetAngle += random.nextDouble() * Math.PI * 2.0D;
             }
 
-            if (logger != null && System.currentTimeMillis() - startTime > 7_499) {
+            if (logger != null && System.currentTimeMillis() - checkpointTime > 7_499) {
                 logger.info("Generating strongholds for level \"" + name + "\": " + (int)(strongholdNumber / (double)count * 100) + "%");
-                startTime = System.currentTimeMillis();
+                checkpointTime = System.currentTimeMillis();
             }
         }
+
+        long time = System.currentTimeMillis() - startTime;
+        if (logger != null) logger.info("Successfully generated " + strongholdConfig.getCount() + " strongholds for level \"" + name + "\" in " + time / 1000d + " seconds.");
     }
 
     private static BlockPosition locateBiome(WorldChunkManager parent, int x, int z, List<BiomeBase> allowedBiomes, Random random) {

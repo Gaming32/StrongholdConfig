@@ -72,7 +72,6 @@ public class StrongholdModifier {
     private static long inject(ChunkGenerator chunkGenerator, StructureSettingsStronghold config, String worldName, boolean force, Logger logger) throws ReflectiveOperationException {
         StructureSettings structuresConfig = chunkGenerator.getSettings();
         if (!force && structuresConfig.b() == null) return -1; // No stronghold in this world
-        if (logger != null) logger.info("Generating " + config.c() + " strongholds for level \"" + worldName + "\"");
         STRONGHOLD_FIELD.set(structuresConfig, config);
         return regenerate(chunkGenerator, worldName, logger);
     }

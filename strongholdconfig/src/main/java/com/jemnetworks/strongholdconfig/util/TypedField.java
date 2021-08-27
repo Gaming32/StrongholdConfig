@@ -3,7 +3,7 @@ package com.jemnetworks.strongholdconfig.util;
 import java.lang.reflect.Field;
 
 public final class TypedField<T> {
-    private Field field;
+    private final Field field;
 
     private TypedField(Field field) {
         this.field = field;

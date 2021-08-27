@@ -13,19 +13,17 @@ public class StrongholdModifierListener implements Listener {
 
     @EventHandler
     public void onWorldInit(WorldInitEvent e) {
-        long time = -1;
+        boolean skipped = false;
         StrongholdConfigWrapper newConfig = null;
         try {
             newConfig = plugin.getWorldConfig(e.getWorld().getName());
-            time = StrongholdModifier.inject(e.getWorld(), newConfig, newConfig != plugin.defaultConfig, plugin.logger); // If the section is defined in the config, but is empty, the configs will be .equals() but not ==
+            skipped = StrongholdModifier.inject(e.getWorld(), newConfig, newConfig != plugin.defaultConfig, plugin.logger) == -1;
         } catch (ReflectiveOperationException e1) {
             e1.printStackTrace();
-            time = -1;
+            skipped = true;
         }
-        if (time == -1) {
+        if (skipped) {
             plugin.logger.info("Stronghold generation for level \"" + e.getWorld().getName() + "\" skipped.");
-        } else {
-            plugin.logger.info("Successfully generated " + newConfig.getCount() + " strongholds for level \"" + e.getWorld().getName() + "\" in " + time / 1000d + " seconds.");
         }
     }
 }
